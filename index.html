@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="每日饮水记录与个性化饮水建议，数据保存在本地浏览器。"
+    />
+    <title>水量记录</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="dashboard" aria-labelledby="app-title">
+        <div class="title-row">
+          <div>
+            <p class="eyebrow">每日饮水</p>
+            <h1 id="app-title">水量记录</h1>
+          </div>
+          <div class="date-switcher" aria-label="选择日期">
+            <button class="icon-button" id="prev-day" type="button" aria-label="前一天" title="前一天">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <time id="active-date" datetime=""></time>
+            <button class="today-button" id="today-button" type="button">今天</button>
+            <button class="icon-button" id="next-day" type="button" aria-label="后一天" title="后一天">
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-band">
+          <div class="water-card">
+            <div class="progress-copy">
+              <span class="metric-label">已记录</span>
+              <strong id="today-total">0 ml</strong>
+              <span id="remaining-copy">距离目标还差 0 ml</span>
+            </div>
+            <div class="water-visual" aria-hidden="true">
+              <img src="./assets/water-glass.svg" alt="" />
+              <div class="fill-mask">
+                <div id="water-fill" class="water-fill"></div>
+              </div>
+            </div>
+            <div class="target-copy">
+              <span>目标</span>
+              <strong id="target-amount">2200 ml</strong>
+            </div>
+          </div>
+
+          <div class="quick-log" aria-labelledby="quick-log-title">
+            <h2 id="quick-log-title">快速记录</h2>
+            <div class="quick-buttons" id="quick-buttons"></div>
+            <form class="custom-form" id="custom-form">
+              <label for="custom-amount">自定义</label>
+              <div class="field-row">
+                <input id="custom-amount" name="amount" type="number" min="0" step="1" value="250" />
+                <span>ml</span>
+                <button class="primary-button" type="submit">添加</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid" aria-label="饮水详情">
+        <div class="panel log-panel">
+          <div class="panel-heading">
+            <h2>当天记录</h2>
+            <button class="ghost-button" id="clear-day" type="button">清空</button>
+          </div>
+          <ol class="log-list" id="log-list"></ol>
+          <p class="empty-state" id="empty-state">今天还没有记录。</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <h2>7 天趋势</h2>
+            <span id="week-average">均值 0 ml</span>
+          </div>
+          <div class="week-chart" id="week-chart" aria-label="最近七天饮水量"></div>
+        </div>
+
+        <div class="panel settings-panel">
+          <div class="panel-heading">
+            <h2>个人目标</h2>
+            <button class="ghost-button" id="reset-profile" type="button">重置</button>
+          </div>
+          <form id="profile-form" class="profile-form">
+              <fieldset>
+                <legend>性别</legend>
+                <div class="segmented" role="radiogroup" aria-label="性别">
+                  <label>
+                    <input type="radio" name="sex" value="female" />
+                    <span>女性</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="sex" value="male" />
+                    <span>男性</span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <label class="input-label" for="weight">体重</label>
+              <div class="field-row">
+                <input id="weight" name="weight" type="number" min="30" max="180" step="1" />
+                <span>kg</span>
+              </div>
+
+              <label class="input-label" for="activity">运动</label>
+              <div class="field-row">
+                <input id="activity" name="activity" type="number" min="0" max="360" step="5" />
+                <span>分钟/天</span>
+              </div>
+
+              <div class="toggle-list">
+                <label class="toggle">
+                  <input type="checkbox" name="hotDay" />
+                  <span>高温或出汗多</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" name="pregnant" />
+                  <span>孕期</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" name="lactating" />
+                  <span>哺乳期</span>
+                </label>
+              </div>
+
+              <label class="input-label" for="manual-target">自定义目标</label>
+              <div class="field-row">
+                <input id="manual-target" name="manualTarget" type="number" min="800" max="6000" step="50" />
+                <span>ml</span>
+              </div>
+          </form>
+        </div>
+
+        <div class="panel reminder-panel">
+          <div class="panel-heading">
+            <h2>喝水提醒</h2>
+            <div class="reminder-heading-actions">
+              <span id="reminder-status">未开启</span>
+              <button class="primary-button" id="reminder-toggle" type="button">开启通知</button>
+            </div>
+          </div>
+          <div class="reminder-summary">
+            <strong id="reminder-window">09:00 - 17:00</strong>
+            <p id="reminder-copy">每小时少量补水，避免一次喝太多。</p>
+          </div>
+          <form class="reminder-settings" id="reminder-settings">
+            <label for="reminder-start">开始</label>
+            <select id="reminder-start" name="startTime"></select>
+            <label for="reminder-end">结束</label>
+            <select id="reminder-end" name="endTime"></select>
+            <label for="reminder-interval">间隔</label>
+            <input id="reminder-interval" name="intervalMinutes" type="number" min="15" max="240" step="5" />
+            <span>分钟</span>
+          </form>
+          <ol class="reminder-plan" id="reminder-plan"></ol>
+        </div>
+
+        <div class="panel advice-panel">
+          <div class="panel-heading">
+            <h2>科学建议</h2>
+            <span id="advice-tag">动态估算</span>
+          </div>
+          <div class="advice-list" id="advice-list"></div>
+          <div class="sources">
+            <a href="https://www.cdc.gov/healthy-weight-growth/water-healthy-drinks/index.html" target="_blank" rel="noreferrer">CDC</a>
+            <a href="https://www.nationalacademies.org/projects/HMD-FNB-19-P-139/publication/10925" target="_blank" rel="noreferrer">NASEM DRI</a>
+            <a href="https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1459" target="_blank" rel="noreferrer">EFSA</a>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <template id="log-item-template">
+      <li>
+        <div>
+          <strong class="log-amount"></strong>
+          <span class="log-time"></span>
+        </div>
+        <button class="icon-button delete-log" type="button" aria-label="删除记录" title="删除记录">×</button>
+      </li>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
